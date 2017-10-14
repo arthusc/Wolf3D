@@ -6,7 +6,7 @@
 /*   By: achambon <achambon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/13 20:24:28 by achambon          #+#    #+#             */
-/*   Updated: 2017/10/13 21:55:25 by achambon         ###   ########.fr       */
+/*   Updated: 2017/10/14 22:00:54 by achambon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,43 +14,42 @@
 
 void				put_pixel_mlx(t_mlx *mlx, int x, int y)
 {
-	int i;
-
-	if (x >= 900 || x < 0 || y >= 900 || y < 0)
+	if (x < 0 || x >= WIDTH || y < 0 || y >= HEIGHT)
 		return ;
-	i = x * 4 + y * mlx->stride;
-	mlx->image_data[i] = (mlx->color);
-	mlx->image_data[++i] = ((mlx->color >> 8));
-	mlx->image_data[++i] = (mlx->color >> 16);
+	*(int *)(mlx->image_data + ((x + y * (int)WIDTH) * mlx->bpp)) = mlx->color;
 }
 
-void	rt_colors(t_mlx *mlx, int x)
+void				rt_colors_2(t_mlx *mlx, int x, int y, int j)
 {
-	// X1 = i;
+	while (y++ <= j)
+		put_pixel_mlx(mlx, x, y);
+	y = mlx->drawstart + 1;
+	mlx->color = 0xfc6472;
+	while (y-- >= 0)
+		put_pixel_mlx(mlx, x, y);
+	y = mlx->drawend;
+	mlx->color = 0xf4a32e;
+	while (y++ <= HEIGHT && y >= 0)
+		put_pixel_mlx(mlx, x, y);
+}
+
+void				rt_colors(t_mlx *mlx, int x)
+{
 	int y;
 	int j;
 
-	y = mlx->drawStart;
-	j = mlx->drawEnd;
-	if (mlx->map[mlx->mapX][mlx->mapY] == 1)
+	y = mlx->drawstart;
+	j = mlx->drawend;
+	if (mlx->map[mlx->mapx][mlx->mapy] == 1)
 	{
-		if (mlx->stepX == -1 && mlx->stepY == -1)
-			mlx->color = (mlx->side == 1) ? 0x594F4F / 2 : 0x9DE0AD;
-		else if (mlx->stepX == 1 && mlx->stepY == -1)
-			mlx->color = (mlx->side == 1) ? 0x594F4F / 2 : 0xE5FCC2;
-		else if (mlx->stepX == -1 && mlx->stepY == 1)
-			mlx->color = (mlx->side == 1) ? 0x45ADA8 : 0x9DE0AD;
-		else if (mlx->stepX == 1 && mlx->stepY == 1)
-			mlx->color = (mlx->side == 1) ? 0x45ADA8 : 0xE5FCC2;
+		if (mlx->stepx == -1 && mlx->stepy == -1)
+			mlx->color = (mlx->side == 1) ? 0xff7fcf : 0xaa60ff;
+		else if (mlx->stepx == 1 && mlx->stepy == -1)
+			mlx->color = (mlx->side == 1) ? 0xff7fcf : 0xb77aff;
+		else if (mlx->stepx == -1 && mlx->stepy == 1)
+			mlx->color = (mlx->side == 1) ? 0xff93d7 : 0xaa60ff;
+		else if (mlx->stepx == 1 && mlx->stepy == 1)
+			mlx->color = (mlx->side == 1) ? 0xff93d7 : 0xb77aff;
 	}
-	while (y++ <= j)
-		put_pixel_mlx(mlx, x, y);
-	y++;
-	mlx->color = 0x594F4F;
-	while (y-- >= 0)
-		put_pixel_mlx(mlx, x, y);
-	y = j;
-	mlx->color = 0x547980;
-	while (y++ <= HEIGHT && y >= 0)
-		put_pixel_mlx(mlx, x, y);
+	rt_colors_2(mlx, x, y, j);
 }

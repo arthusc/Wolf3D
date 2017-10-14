@@ -6,7 +6,7 @@
 #    By: achambon <achambon@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/11/25 13:25:00 by achambon          #+#    #+#              #
-#    Updated: 2017/10/01 15:29:22 by achambon         ###   ########.fr        #
+#    Updated: 2017/10/14 16:11:28 by achambon         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,7 +23,7 @@ ft_strjoin.c ft_strtrim.c ft_strsplit.c ft_itoa.c ft_putchar.c ft_putstr.c \
 ft_putendl.c ft_putnbr.c ft_putchar_fd.c ft_putendl_fd.c ft_putnbr_fd.c \
 ft_lstnew.c ft_lstdelone.c ft_lstdel.c ft_lstadd.c ft_lstiter.c ft_lstmap.c \
 ft_putstr_fd.c ft_lstpush.c ft_isspace.c ft_power.c ft_swapchar.c ft_swapint.c \
-get_next_line.c ft_joinfree.c \
+get_next_line.c ft_joinfree.c ft_split.c \
 
 HEADER = libft.h
 NAME = libft.a

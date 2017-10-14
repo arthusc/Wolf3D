@@ -1,70 +1,104 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parse.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: achambon <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2017/10/14 22:12:48 by achambon          #+#    #+#             */
+/*   Updated: 2017/10/14 22:14:10 by achambon         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/wolf3d.h"
+#include <stdio.h>
 
-int					ft_open(char *str)
+int		ft_count(char **tab)
 {
-	int fd;
+	int count;
 
-	if (!(fd = open(str, O_RDONLY)))
-	{
-		ft_putendl("error opening the file");
-		exit(-1);
-	}
-	return (fd);
+	count = 0;
+	while (tab[count] != 0)
+		count++;
+	return (count);
 }
 
-int					*ft_read(char **argv)
+void	*free_tab(char **tmp)
+{
+	int		i;
+
+	i = -1;
+	while (tmp[++i])
+		free(tmp[i]);
+	free(tmp);
+	return (NULL);
+}
+
+int		**parse_in_int(char **tab, int line_value)
+{
+	int		**grid;
+	char	**tmp;
+	int		i;
+	int		j;
+
+	i = -1;
+	if ((grid = (int **)malloc(sizeof(int*) * line_value)) == NULL)
+		return (NULL);
+	while (++i < line_value)
+	{
+		tmp = ft_split(tab[i], " ");
+		j = 0;
+		if ((grid[i] = (int*)malloc(sizeof(int) * ft_count(tmp) + 1)) == NULL)
+			return (NULL);
+		while (j < ft_count(tmp))
+		{
+			grid[i][j] = ft_atoi(tmp[j]);
+			j++;
+		}
+		grid[i][j] = -42;
+		tmp = free_tab(tmp);
+	}
+	return (grid);
+}
+
+char	**fill_tab(int line_value, char *file)
 {
 	int		fd;
-	char	*line;
-	int		*index;
+	int		i;
+	char	**tab;
 
-	index = malloc(sizeof(int) * 2);
-	index[0] = 0;
-	index[1] = 0;
-	fd = ft_open(argv[1]);
-	while (get_next_line(fd, &line) == 1)
+	i = 0;
+	if ((tab = (char**)malloc(sizeof(char*) * line_value)) == NULL)
+		return (NULL);
+	fd = open(file, O_RDONLY);
+	while (i < line_value)
 	{
-		if (index[0] == 0)
-			index[0] = ft_countwords(line);
-		if (ft_countwords(line) < index[0])
-		{
-			ft_putendl("Found wrong line length. Exiting.");
-			exit(-1);
-		}
-		index[1]++;
-		line = NULL;
-		free(line);
+		get_next_line(fd, &tab[i]);
+		i++;
 	}
-	close(fd);
-	return (index);
+	return (tab);
 }
 
-int					**ft_map(t_mlx *mlx, int x, int y, char **argv)
+int		parsing(char *filename, t_mlx *mlx)
 {
-	int		index_n_fd[2];
-	char	*line;
+	int		fd;
+	char	*buffer;
+	char	**tab;
+	int		i;
 
-	init_map(mlx, x, y);
-	x = 0;
-	y = 0;
-	index_n_fd[0] = 0;
-	index_n_fd[1] = ft_open(argv[1]);
-	while (get_next_line(index_n_fd[1], &line))
+	i = -1;
+	fd = open(filename, O_RDONLY);
+	mlx->map_width = 0;
+	while (get_next_line(fd, &buffer) > 0)
 	{
-		while (line[index_n_fd[0]] != '\0')
-			if (line[index_n_fd[0]] == ' ')
-				index_n_fd[0]++;
-			else
-			{
-				mlx->map[x][y] = ft_atoi(&line[index_n_fd[0]]);
-				y++;
-				while (line[index_n_fd[0]] != ' ' && line[index_n_fd[0]])
-					index_n_fd[0]++;
-			}
-		reset_index_incr_x(&index_n_fd[0], &x, &y, &line);
+		mlx->map_width++;
+		free(buffer);
 	}
-	mlx->map_width = x;
-	mlx->map[x] = NULL;
-	close(index_n_fd[1]);
+	close(fd);
+	tab = fill_tab(mlx->map_width, filename);
+	mlx->map = parse_in_int(tab, mlx->map_width);
+	while (++i < mlx->map_width)
+		free(tab[i]);
+	free(tab);
 	return (0);
 }

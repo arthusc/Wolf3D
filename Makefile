@@ -6,7 +6,7 @@
 #    By: achambon <achambon@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/07/04 15:40:27 by achambon          #+#    #+#              #
-#    Updated: 2017/10/13 21:54:44 by achambon         ###   ########.fr        #
+#    Updated: 2017/10/14 18:39:42 by achambon         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,9 +18,7 @@ HEADER = ./includes/
 
 SRCS = main.c \
 		init.c \
-		option.c \
 		parse.c \
-		error.c \
 		algo.c \
 		hooks.c \
 		draw.c \
@@ -28,24 +26,23 @@ SRCS = main.c \
 
 LIB = Libft/Libft.a
 
-OBJ = $(SRCS:.c=.o)
-
-FLAGS += -Wall -Wextra -Werror
+FLAGS += -Wall -Wextra -Werror #-g
 
 FSRCS = $(addprefix $(SRCPATH), $(SRCS))
 
 all : $(NAME)
 
-$(NAME):
+$(NAME): $(FSRCS)
 	make -C libft/
 	gcc $(FLAGS) -I $(HEADER) minilibx_macos/libmlx.a -framework OpenGL -framework AppKit $(LIB) $(FSRCS) -o $(NAME)
 
 clean :
 	make -C libft/ clean
-	rm -f $(OBJ)
 
 fclean: clean
 	make -C libft/ fclean
 	rm -f $(NAME)
 
 re: fclean all
+
+.PHONY: all clean fclean re

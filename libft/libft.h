@@ -6,7 +6,7 @@
 /*   By: achambon <achambon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/25 13:44:12 by achambon          #+#    #+#             */
-/*   Updated: 2017/10/04 14:21:31 by achambon         ###   ########.fr       */
+/*   Updated: 2017/10/14 19:50:48 by achambon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include <stdlib.h>
 # include <string.h>
 
+char				**ft_split(char *str, char *charset);
 char				*ft_joinfree(char *s1, char *s2, char **addr);
 void				ft_bzero(void *s, size_t n);
 void				*ft_memccpy(void *dst, const void *src, int c, size_t n);

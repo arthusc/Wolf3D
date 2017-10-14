@@ -1,75 +1,87 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   hooks.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: achambon <achambon@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2017/10/14 19:40:35 by achambon          #+#    #+#             */
+/*   Updated: 2017/10/14 22:11:15 by achambon         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/wolf3d.h"
 #include <stdio.h>
+
+void		just_right(t_mlx *mlx)
+{
+	mlx->old_dirx = mlx->dirx;
+	mlx->dirx = mlx->dirx * cos(mlx->rotspeed) - mlx->diry * sin(mlx->rotspeed);
+	mlx->diry = mlx->old_dirx * sin(mlx->rotspeed) + mlx->diry *
+		cos(mlx->rotspeed);
+	mlx->old_planex = mlx->planex;
+	mlx->planex = mlx->planex * cos(mlx->rotspeed) - mlx->planey *
+		sin(mlx->rotspeed);
+	mlx->planey = mlx->old_planex * sin(mlx->rotspeed) + mlx->planey *
+		cos(mlx->rotspeed);
+}
 
 void		right_left(int keycode, t_mlx *mlx)
 {
 	if (keycode == 124)
 	{
-		mlx->old_dirX = mlx->dirX;
-		mlx->dirX = mlx->dirX * cos(-mlx->rotSpeed) - mlx->dirY * sin(-mlx->rotSpeed);
-		mlx->dirY = mlx->old_dirX * sin(-mlx->rotSpeed) + mlx->dirY * cos(-mlx->rotSpeed);
-		mlx->old_planeX = mlx->planeX;
-		mlx->planeX = mlx->planeX * cos(-mlx->rotSpeed) - mlx->planeY * sin(-mlx->rotSpeed);
-		mlx->planeY = mlx->old_planeX * sin(-mlx->rotSpeed) + mlx->planeY * cos(-mlx->rotSpeed);
+		mlx->old_dirx = mlx->dirx;
+		mlx->dirx = mlx->dirx * cos(-mlx->rotspeed) - mlx->diry *
+			sin(-mlx->rotspeed);
+		mlx->diry = mlx->old_dirx * sin(-mlx->rotspeed) + mlx->diry *
+			cos(-mlx->rotspeed);
+		mlx->old_planex = mlx->planex;
+		mlx->planex = mlx->planex * cos(-mlx->rotspeed) - mlx->planey *
+			sin(-mlx->rotspeed);
+		mlx->planey = mlx->old_planex * sin(-mlx->rotspeed) + mlx->planey *
+			cos(-mlx->rotspeed);
 	}
 	else
-	{
-		mlx->old_dirX = mlx->dirX;
-		mlx->dirX = mlx->dirX * cos(mlx->rotSpeed) - mlx->dirY * sin(mlx->rotSpeed);
-		mlx->dirY = mlx->old_dirX * sin(mlx->rotSpeed) + mlx->dirY * cos(mlx->rotSpeed);
-		mlx->old_planeX = mlx->planeX;
-		mlx->planeX = mlx->planeX * cos(mlx->rotSpeed) - mlx->planeY * sin(mlx->rotSpeed);
-		mlx->planeY = mlx->old_planeX * sin(mlx->rotSpeed) + mlx->planeY * cos(mlx->rotSpeed);
-	}
+		just_right(mlx);
 }
 
 void		up_down(int keycode, t_mlx *mlx)
 {
 	if (keycode == 126)
 	{
-		if (mlx->map[(int)(mlx->posX + (mlx->dirX * mlx->moveSpeed) * 1.5)][(int)(mlx->posY)] == 0)
-			if ((mlx->posX + mlx->dirX * mlx->moveSpeed) >= 1
-					&& (mlx->posX + mlx->dirX * mlx->moveSpeed) < mlx->map_width - 1)
-				mlx->posX += mlx->dirX * mlx->moveSpeed;
-		if (mlx->map[(int)(mlx->posX)][(int)(mlx->posY + (mlx->dirY * mlx->moveSpeed) * 1.5)] == 0)
-			if ((mlx->posY + mlx->dirY * mlx->moveSpeed) >= 1
-					&& (mlx->posY + mlx->dirY * mlx->moveSpeed) < mlx->map_width - 1)
-				mlx->posY += mlx->dirY * mlx->moveSpeed;
+		if (mlx->map[(int)(mlx->posx +
+					(mlx->dirx * mlx->movespeed) * 1.5)][(int)(mlx->posy)] == 0)
+			mlx->posx += mlx->dirx * mlx->movespeed;
+		if (mlx->map[(int)(mlx->posx)][(int)(mlx->posy +
+					(mlx->diry * mlx->movespeed) * 1.5)] == 0)
+			mlx->posy += mlx->diry * mlx->movespeed;
 	}
 	else
 	{
-		if (mlx->map[(int)(mlx->posX - (mlx->dirX * mlx->moveSpeed) * 1.5)][(int)(mlx->posY)] == 0)
-			if ((mlx->posX - mlx->dirX * mlx->moveSpeed) >= 1
-					&& (mlx->posX - mlx->dirX * mlx->moveSpeed) < mlx->map_width - 1)
-				mlx->posX -= mlx->dirX * mlx->moveSpeed;
-		if (mlx->map[(int)(mlx->posX)][(int)(mlx->posY - (mlx->dirY * mlx->moveSpeed) * 1.5)] == 0)
-			if ((mlx->posY - mlx->dirY * mlx->moveSpeed) >= 1
-					&& (mlx->posY - mlx->dirY * mlx->moveSpeed) < mlx->map_width - 1)
-				mlx->posY -= mlx->dirY * mlx->moveSpeed;
+		if (mlx->map[(int)(mlx->posx - (mlx->dirx * mlx->movespeed) *
+					1.5)][(int)(mlx->posy)] == 0)
+			mlx->posx -= mlx->dirx * mlx->movespeed;
+		if (mlx->map[(int)(mlx->posx)][(int)(mlx->posy - (mlx->diry *
+						mlx->movespeed) * 1.5)] == 0)
+			mlx->posy -= mlx->diry * mlx->movespeed;
 	}
 }
 
 int			key_press(int keycode, t_mlx *mlx)
-{	
+{
+	if (keycode == 257)
+		mlx->sprint = mlx->sprint == 15.0 ? 5.0 : 15.0;
 	if (keycode == 124 || keycode == 123)
 		right_left(keycode, mlx);
 	if (keycode == 126 || keycode == 125)
 		up_down(keycode, mlx);
 	if (keycode == 53)
 		hook_close(mlx);
-	mlx_clear_window(mlx->mlx, mlx->window);
-	delete_image(mlx);
+	mlx_destroy_image(mlx->mlx, mlx->image);
 	new_image(mlx);
 	algo(mlx);
 	mlx_put_image_to_window(mlx->mlx, mlx->window, mlx->image, 0, 0);
 	mlx_do_sync(mlx->mlx);
-	return (0);
-}
-
-int			hook_close(t_mlx *mlx)
-{
-	free(mlx);
-	exit(EXIT_SUCCESS);
 	return (0);
 }
 
